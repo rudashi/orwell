@@ -7,3 +7,8 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->get('{letters}', [
+    'as' => 'search',
+    'uses' => 'WordsController@search'
+]);

@@ -1,3 +1,4 @@
 /vendor
 /.idea
 .env
+lumen_ide_helper.php
