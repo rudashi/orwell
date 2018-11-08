@@ -11,11 +11,12 @@ class Words extends Migration
     {
         Schema::create('words', function (Blueprint $table) {
             $table->string('word');
-            $table->char('characters')->nullable();
         });
 
+        DB::unprepared('ALTER TABLE words ADD COLUMN characters CHAR [];');
+
         DB::unprepared('
-            CREATE OR REPLACE FUNCTION sort_chars(text)  RETURNS text AS
+            CREATE OR REPLACE FUNCTION sort_chars(text) RETURNS text AS
                 $func$
             SELECT array_to_string(ARRAY(SELECT unnest(string_to_array($1 COLLATE "C", NULL)) c ORDER BY c), \'\')
                 $func$  LANGUAGE sql IMMUTABLE;
@@ -27,7 +28,7 @@ class Words extends Migration
 
     public function down() : void
     {
-        DB::unprepared('DROP PROCEDURE IF EXISTS sort_chars');
+        DB::unprepared('DROP FUNCTION IF EXISTS sort_chars');
 
         Schema::drop('words');
     }

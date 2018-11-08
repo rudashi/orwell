@@ -6,17 +6,7 @@ SQL:
 
 -- Populate it
 ```sql
-UPDATE words SET characters = regexp_split_to_array(word, '');
-```
-
--- A GIN index on the characters column
-```sql
-CREATE INDEX ix_word_chars ON words USING GIN (characters);
-```
-
--- An index on word length
-```sql
-CREATE INDEX ix_word_length ON words (char_length(word));
+UPDATE words SET characters = regexp_split_to_array(word, '') WHERE characters IS NULL;
 ```
 
 -- Add points to words
@@ -28,4 +18,12 @@ UPDATE words SET points =
       LEFT JOIN alphas ON the_word = letter
   )
 WHERE points IS NULL
+```
+
+-- If needed
+```sql
+CREATE OR REPLACE FUNCTION sort_chars(text) RETURNS text AS
+    $func$
+SELECT array_to_string(ARRAY(SELECT unnest(string_to_array($1 COLLATE "C", NULL)) c ORDER BY c), '')
+    $func$  LANGUAGE sql IMMUTABLE;
 ```

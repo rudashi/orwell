@@ -28,7 +28,7 @@ class WordsController extends Controller
             );
 
         } catch (\Exception $e) {
-            return $this->responseError($e->getMessage(), 400);
+            return $this->responseException($e);
         }
 
     }
@@ -42,7 +42,7 @@ class WordsController extends Controller
             return response()->json($collection);
 
         } catch (\Exception $e) {
-            return $this->responseError($e->getMessage(), 400);
+            return $this->responseException($e);
         }
 
     }
