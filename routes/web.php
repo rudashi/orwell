@@ -10,5 +10,5 @@ $router->get('/', function () use ($router) {
 
 $router->get('{letters}', [
     'as' => 'search',
-    'uses' => 'WordsController@search'
+    'uses' => 'WordsController@allWords'
 ]);

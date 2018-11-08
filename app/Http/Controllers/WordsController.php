@@ -16,11 +16,8 @@ class WordsController extends Controller
 
     public function search(string $letters) : \Illuminate\Http\JsonResponse
     {
-
         try {
-
             $letters = $this->repository->prepareInputSearch($letters);
-
             $collection = $this->repository->anagram($letters);
 
             return $this->response(
@@ -29,6 +26,20 @@ class WordsController extends Controller
                     'words' => $collection
                 ])
             );
+
+        } catch (\Exception $e) {
+            return $this->responseError($e->getMessage(), 400);
+        }
+
+    }
+
+    public function allWords(string $letters) : \Illuminate\Http\JsonResponse
+    {
+        try {
+            $letters = $this->repository->prepareInputSearch($letters);
+            $collection = $this->repository->anagram($letters);
+
+            return response()->json($collection);
 
         } catch (\Exception $e) {
             return $this->responseError($e->getMessage(), 400);
