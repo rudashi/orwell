@@ -18,7 +18,7 @@ class WordsController extends Controller
     {
         try {
             $letters = $this->repository->prepareInputSearch($letters);
-            $collection = $this->repository->anagram($letters);
+            $collection = $this->repository->anagram($letters, 25);
 
             return $this->response(
                 collect([

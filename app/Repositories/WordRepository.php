@@ -18,9 +18,9 @@ class WordRepository implements WordInterface
         $this->db = app('db');
     }
 
-    public function anagram(string $letters) : \Illuminate\Support\Collection
+    public function anagram(string $letters, int $limit = null) : \Illuminate\Support\Collection
     {
-        $engine = new Engine($letters);
+        $engine = new Engine($letters, $limit);
         $engine->validateCharacters();
 
         $words = $this->db

@@ -18,7 +18,7 @@ class Engine
 
     private $limit;
 
-    public function __construct(string $characters, int $limit = 25)
+    public function __construct(string $characters, int $limit = null)
     {
         $this->setCharacters(preg_split('//u', mb_strtolower($characters), -1, PREG_SPLIT_NO_EMPTY));
 
@@ -53,7 +53,7 @@ class Engine
         return $this;
     }
 
-    public function setLimit(int $limit) : Engine
+    public function setLimit(?int $limit) : Engine
     {
         $this->limit = $limit;
 
@@ -89,7 +89,7 @@ class Engine
         return $this->wildcardsCount;
     }
 
-    public function getLimit() : int
+    public function getLimit() : ?int
     {
         return $this->limit;
     }

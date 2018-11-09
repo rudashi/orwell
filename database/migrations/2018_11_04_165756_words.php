@@ -28,7 +28,7 @@ class Words extends Migration
 
     public function down() : void
     {
-        DB::unprepared('DROP FUNCTION IF EXISTS sort_chars');
+        DB::unprepared('DROP FUNCTION IF EXISTS sort_chars;');
 
         Schema::drop('words');
     }
