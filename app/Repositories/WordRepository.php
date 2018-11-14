@@ -34,15 +34,12 @@ class WordRepository implements WordInterface
              ) as points')
             ->where('characters', '<@', $engine->getSearchValue())
             ->whereRaw('char_length(word) <= ?', $engine->getCharactersCount())
-            ->whereRaw('(SELECT count(*) FROM ( SELECT unnest(characters) EXCEPT ALL SELECT unnest(? :: CHAR []) ) extra) <= ?', [$engine->getSearchValue(), $engine->getWildcardsCount()])
+            ->whereRaw('(SELECT count(*) FROM ( SELECT unnest(characters) EXCEPT ALL SELECT unnest(? :: CHAR []) ) extra) <= ?', [$engine->getExcludeValue(), $engine->getWildcardsCount()])
             ->orderByRaw('char_length(word) DESC')
             ->orderByDesc('points')
+            ->orderBy('word')
             ->limit($engine->getLimit())
             ->get();
-
-        if ($words->isEmpty()) {
-            throw new \RuntimeException('Found nothing.');
-        }
 
         return $words;
     }
@@ -59,6 +56,6 @@ class WordRepository implements WordInterface
 
     private function validateLetters(string $letters) : bool
     {
-        return preg_match('/^[A-ZĄĆĘŁŃÓŚŹŻ]*$/iu', $letters);
+        return preg_match('/[A-ZĄĆĘŁŃÓŚŹŻ\?]/iu', $letters);
     }
 }

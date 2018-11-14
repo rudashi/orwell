@@ -16,6 +16,8 @@ class Engine
 
     private $searchValue;
 
+    private $excludeValue;
+
     private $limit;
 
     public function __construct(string $characters, int $limit = null)
@@ -25,6 +27,8 @@ class Engine
         $this->setWildcardsCount($this->countWildcards());
 
         $this->setSearchValue();
+
+        $this->setExcludeValue();
 
         $this->setLimit($limit);
     }
@@ -69,7 +73,14 @@ class Engine
 
     public function setSearchValue(\Illuminate\Support\Collection $characters = null) : Engine
     {
-        $this->searchValue = $this->pgArray($characters ?? $this->characters);
+        $this->searchValue = $this->pgArray($characters ?? $this->characters, true);
+
+        return $this;
+    }
+
+    public function setExcludeValue(\Illuminate\Support\Collection $characters = null) : Engine
+    {
+        $this->excludeValue = $this->pgArray($characters ?? $this->characters);
 
         return $this;
     }
@@ -99,11 +110,23 @@ class Engine
         return $this->searchValue;
     }
 
-    public function pgArray(\Illuminate\Support\Collection $collection) : string
+    public function getExcludeValue() : string
     {
-        return '{' . $collection->map(function (Alpha $alpha) {
+        return $this->excludeValue;
+    }
+
+    public function pgArray(\Illuminate\Support\Collection $collection, bool $withWildcard = false) : string
+    {
+        $characters = $collection->map(function (Alpha $alpha) {
             return $alpha->isWildcard() ? null : $alpha->getCharacter();
-        })->filter()->implode(',') .'}';
+        })->filter();
+
+        if ($withWildcard === true && $this->getWildcardsCount() > 0) {
+            $characters = $characters->merge(
+                collect(array_merge(['ą','ś','ę','ż','ź','ć','ń','ó','ł'], range('a', 'z')))
+            );
+        }
+        return '{' . $characters->implode(',') .'}';
     }
 
     public function countWildcards() : int

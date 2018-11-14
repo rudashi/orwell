@@ -26,7 +26,7 @@ class Alpha
 
     public function isWildcard() : bool
     {
-        return ($this->getCharacter() === '*');
+        return \in_array($this->getCharacter(), [ '?', '*']);
     }
 
 }
